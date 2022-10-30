@@ -1,19 +1,29 @@
 #include "pch.h"
 #include "TrainingDAR.h"
 
+#define DAR_OFF 0
+#define DAR_LEFT 1
+#define DAR_RIGHT 2
 
-BAKKESMOD_PLUGIN(TrainingDAR, "plugin for training DAR", plugin_version, PLUGINTYPE_FREEPLAY)
+BAKKESMOD_PLUGIN(TrainingDAR, "Training DAR", plugin_version, PLUGINTYPE_FREEPLAY)
 
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
+int cdar_mode = DAR_LEFT;
 
 void TrainingDAR::onLoad()
 {
 	_globalCvarManager = cvarManager;
 	//cvarManager->log("Plugin loaded!");
+	LOG("[onLoad] Hello");
 
-	//cvarManager->registerNotifier("my_aweseome_notifier", [&](std::vector<std::string> args) {
-	//	cvarManager->log("Hello notifier!");
-	//}, "", 0);
+	cvarManager->registerCvar("cdar_mode", "0", "[TrainingDAR] mode of conditional DAR", true, true, -1, true, 1)
+		.addOnValueChanged([this](std::string oldValue, CVarWrapper cvar) {
+			cdar_mode = cvar.getIntValue();
+		});
+
+	gameWrapper->HookEventWithCaller<CarWrapper>("Function TAGame.Car_TA.SetVehicleInput",
+		bind(&TrainingDAR::conditionalDAR, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+	);
 
 	//auto cvar = cvarManager->registerCvar("template_cvar", "hello-cvar", "just a example of a cvar");
 	//auto cvar2 = cvarManager->registerCvar("template_cvar2", "0", "just a example of a cvar with more settings", true, true, -10, true, 10 );
@@ -45,4 +55,28 @@ void TrainingDAR::onLoad()
 
 void TrainingDAR::onUnload()
 {
+	LOG("[onUnload] Bye");
+}
+
+void TrainingDAR::conditionalDAR(CarWrapper cw, void* params, std::string funcName)
+{
+	LOG("[conditionalDAR] start");
+
+	if (!gameWrapper->IsInFreeplay() && !gameWrapper->IsInCustomTraining()) { return; }
+
+	ControllerInput* ci = (ControllerInput*)params;
+	switch (cdar_mode) {
+	case DAR_LEFT:
+		if (abs(ci->Pitch) != 0 or abs(ci->Yaw) != 0) {
+			ci->Roll = -1.0f;
+		}
+		break;
+	case DAR_RIGHT:
+		if (abs(ci->Pitch) != 0 or abs(ci->Yaw) != 0) {
+			ci->Roll = 1.0f;
+		}
+		break;
+	}
+
+	LOG("[conditionalDAR] end");
 }

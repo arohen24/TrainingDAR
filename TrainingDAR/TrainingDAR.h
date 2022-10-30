@@ -41,5 +41,7 @@ class TrainingDAR: public BakkesMod::Plugin::BakkesModPlugin/*, public BakkesMod
 	virtual void OnClose() override;
 	
 	*/
+
+	void conditionalDAR(CarWrapper cw, void* params, std::string funcName);
 };
 
