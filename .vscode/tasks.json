@@ -1,0 +1,42 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cl.exe",
+            "args": [
+                "/LD",
+                "/MD",
+                "/EHsc",
+                "/Zi",
+                "/Fe:${workspaceFolder}\\TrainingDAR.dll",
+                "/std:c++17",
+                "/DFMT_HEADER_ONLY",
+                "${workspaceFolder}\\TrainingDAR\\*.cpp",
+                "${workspaceFolder}\\TrainingDAR\\IMGUI\\imgui.cpp",
+                "${workspaceFolder}\\TrainingDAR\\IMGUI\\imgui_draw.cpp",
+                "${workspaceFolder}\\TrainingDAR\\IMGUI\\imgui_widgets.cpp",
+                "/I${workspaceFolder}\\TrainingDAR",
+                "/I${workspaceFolder}\\BakkesModSDK\\include",
+                "/I${workspaceFolder}\\TrainingDAR\\fmt\\include",
+                "/I${workspaceFolder}\\TrainingDAR\\IMGUI",
+                "/link",
+                "/LIBPATH:\"${workspaceFolder}\\BakkesModSDK\\lib\"",
+                "pluginsdk.lib",
+                "User32.lib",
+                "Shlwapi.lib"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

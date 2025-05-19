@@ -8,7 +8,7 @@
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
 
-class TrainingDAR: public BakkesMod::Plugin::BakkesModPlugin/*, public BakkesMod::Plugin::PluginSettingsWindow*//*, public BakkesMod::Plugin::PluginWindow*/
+class TrainingDAR: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginSettingsWindow/*, public BakkesMod::Plugin::PluginWindow*/
 {
 
 	//std::shared_ptr<bool> enabled;
@@ -18,11 +18,9 @@ class TrainingDAR: public BakkesMod::Plugin::BakkesModPlugin/*, public BakkesMod
 	virtual void onUnload();
 
 	// Inherited via PluginSettingsWindow
-	/*
 	void RenderSettings() override;
 	std::string GetPluginName() override;
 	void SetImGuiContext(uintptr_t ctx) override;
-	*/
 
 	// Inherited via PluginWindow
 	/*
